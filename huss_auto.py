@@ -6,9 +6,9 @@ import time
 import re  # 정규표현식 사용을 위해 추가
 
 def practice_lms_automation():
-    # 1. 크롬 브라우저 실행
+     # 1. 크롬 브라우저 실행
     options = webdriver.ChromeOptions()
-    # 사용자가 직접 제어하는 느낌을 주기 위해 브라우저 자체 음소거는 사용하지 않습니다.
+
     # options.add_argument("--mute-audio")
     options.add_argument("--window-size=1280,720")  # 창 크기 고정 (버튼 가림 방지)
     driver = webdriver.Chrome(options=options)
@@ -24,10 +24,10 @@ def practice_lms_automation():
     print("강의 자동화 연습을 시작합니다...")
 
     try:
-        # 최초 미수강 강의 개수 파악
+        # 최초 안 들은 강의 개수 파악
         initial_buttons = driver.find_elements(By.CSS_SELECTOR, "a.view.on")
         total_lectures = len(initial_buttons)
-        print(f"총 {total_lectures}개의 미수강 강의를 발견했습니다.")
+        print(f"총 {total_lectures}개의 안 들은 강의를 발견했습니다.")
 
         # 4. 강의 개수만큼 반복해서 실행
         for i in range(total_lectures):
@@ -53,7 +53,7 @@ def practice_lms_automation():
             # 모달 창 열기
             driver.execute_script("arguments[0].click();", current_buttons[0])
             print("강의보기 버튼을 클릭하여 모달창을 엽니다.")
-            time.sleep(3) # 모달 창 뜰 때까지 대기
+            time.sleep(5) # 모달 창 뜰 때까지 대기
 
             # 💡 모달 창 안의 <video> 태그 자체가 로딩될 때까지 확실히 대기
             try:
@@ -61,6 +61,8 @@ def practice_lms_automation():
                     EC.presence_of_element_located((By.CSS_SELECTOR, "video.vjs-tech"))
                 )
                 time.sleep(3) # 비디오 태그가 생겼어도 플레이어가 초기화될 시간 3초 부여
+            except KeyboardInterrupt:
+                print("\n🛑 사용자에 의해 스크립트가 중단되었습니다.")
             except Exception as e:
                 print("⚠️ 비디오 플레이어 로딩이 지연되고 있습니다.")
 
@@ -78,20 +80,6 @@ def practice_lms_automation():
                     driver.execute_script("arguments[0].click();", play_button)
 
                 print("▶️ 재생 버튼을 성공적으로 눌렀습니다!")
-
-                # (보완) 더 자연스러운 음소거를 위해 플레이어의 음소거 버튼을 클릭합니다.
-                try:
-                    mute_button = WebDriverWait(driver, 5).until(
-                        EC.element_to_be_clickable((By.CSS_SELECTOR, "button.vjs-mute-control"))
-                    )
-                    # 음소거가 이미 되어있는지 확인 (vjs-vol-0 클래스가 있으면 음소거 상태)
-                    if "vjs-vol-0" not in mute_button.get_attribute("class"):
-                        mute_button.click()
-                        print("🤫 음소거 버튼을 클릭했습니다.")
-                    else:
-                        print("🤫 이미 음소거 상태입니다.")
-                except Exception:
-                    print("⚠️ 음소거 버튼을 찾지 못했습니다.")
             except Exception as e:
                 print("⚠️ 재생 버튼을 찾지 못했거나 이미 자동 재생 중입니다.")
 
@@ -120,8 +108,8 @@ def practice_lms_automation():
                 except Exception as e:
                     print("시간 정보를 찾는 중...")
 
-                # 90초마다 현재 수강 시간을 체크합니다.
-                time.sleep(90)
+                # 30초마다 현재 수강 시간을 체크합니다.
+                time.sleep(30)
 
             # 7. '학습종료' 버튼 찾아 누르기
             try:
@@ -152,12 +140,9 @@ def practice_lms_automation():
             driver.get(target_url)
 
             # 새로고침 후 페이지 렌더링을 위해 넉넉히 대기합니다.
-            time.sleep(3)
+            time.sleep(5)
 
         print("\n🎉 모든 강의 자동화 연습이 성공적으로 완료되었습니다!")
-
-    except KeyboardInterrupt:
-        print("\n🛑 사용자에 의해 스크립트가 중단되었습니다.")
 
     except Exception as e:
         print(f"\n❌ 에러가 발생했습니다: {e}")
