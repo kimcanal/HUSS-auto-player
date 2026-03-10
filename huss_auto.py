@@ -8,12 +8,12 @@ import re  # 정규표현식 사용을 위해 추가
 def practice_lms_automation():
      # 1. 크롬 브라우저 실행
     options = webdriver.ChromeOptions()
-
+    # 수업을 들어야 하니, 음소거 하면 안되겠죠???
     # options.add_argument("--mute-audio")
     options.add_argument("--window-size=1280,720")  # 창 크기 고정 (버튼 가림 방지)
     driver = webdriver.Chrome(options=options)
-    # 2. 강의 목록이 있는 URL (새로고침할 때도 이 URL을 사용합니다)
-    target_url = "https://portal.huss.ac.kr/lms_st/lctr/lctrMngr/sbjAll"
+    # 2. 로그인 URL로 이동
+    target_url = "https://portal.huss.ac.kr/login"
     driver.get(target_url)
 
     # 3. 직접 로그인 대기
@@ -34,7 +34,7 @@ def practice_lms_automation():
             print(f"\n--- [ {i + 1} / {total_lectures} ] 번째 강의 처리 시작 ---")
 
             # 💡 새로고침 후 시스템(Vue.js)이 준비될 시간을 명시적으로 줍니다.
-            time.sleep(5)
+            time.sleep(3)
 
             # 매번 새로 '강의보기(view on)' 버튼 목록을 가져옵니다.
             current_buttons = WebDriverWait(driver, 15).until(
@@ -53,7 +53,7 @@ def practice_lms_automation():
             # 모달 창 열기
             driver.execute_script("arguments[0].click();", current_buttons[0])
             print("강의보기 버튼을 클릭하여 모달창을 엽니다.")
-            time.sleep(5) # 모달 창 뜰 때까지 대기
+            time.sleep(3) # 모달 창 뜰 때까지 대기
 
             # 💡 모달 창 안의 <video> 태그 자체가 로딩될 때까지 확실히 대기
             try:
@@ -61,8 +61,6 @@ def practice_lms_automation():
                     EC.presence_of_element_located((By.CSS_SELECTOR, "video.vjs-tech"))
                 )
                 time.sleep(3) # 비디오 태그가 생겼어도 플레이어가 초기화될 시간 3초 부여
-            except KeyboardInterrupt:
-                print("\n🛑 사용자에 의해 스크립트가 중단되었습니다.")
             except Exception as e:
                 print("⚠️ 비디오 플레이어 로딩이 지연되고 있습니다.")
 
@@ -137,13 +135,15 @@ def practice_lms_automation():
 
             # 8. 확실한 새로고침을 위해 해당 페이지 URL로 다시 접속합니다.
             print("🔄 학습 상태 갱신을 위해 페이지를 다시 불러옵니다.")
-            driver.get(target_url)
+            driver.refresh()  # 새로고침
 
             # 새로고침 후 페이지 렌더링을 위해 넉넉히 대기합니다.
-            time.sleep(5)
+            time.sleep(3)
 
         print("\n🎉 모든 강의 자동화 연습이 성공적으로 완료되었습니다!")
 
+    except KeyboardInterrupt:
+        print("\n🛑 사용자에 의해 스크립트가 중단되었습니다. 프로그램을 종료합니다.")
     except Exception as e:
         print(f"\n❌ 에러가 발생했습니다: {e}")
 
