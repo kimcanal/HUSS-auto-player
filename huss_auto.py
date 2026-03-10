@@ -14,12 +14,13 @@ def practice_lms_automation():
     driver = webdriver.Chrome(options=options)
     # 2. 로그인 URL로 이동
     target_url = "https://portal.huss.ac.kr/login"
+    # 왜인지 모르겠으나 HUSS 홈페이지를 통하지 않고 바로 로그인으로 가면 화면이 꺠지지만, 로그인 후에는 정상적으로 화면이 표시됩니다.
     driver.get(target_url)
 
     # 3. 직접 로그인 대기
     print("브라우저에서 직접 로그인을 완료하고 강의 목록 페이지로 이동해주세요.")
     print("로그인을 완료한 후, LMS -> 강의 바로가기 -> 학습하기 페이지로 접속해주세요")
-    print("페이지에 강의들 수강하기 버튼 ('강의보기(view on)')이 보여야 합니다.")
+    print("페이지에 강의 수강하기 버튼들 ('강의보기(view on)')이 보여야 합니다.")
     input("엔터(Enter) 키를 누르면 강의 자동화 연습을 시작합니다...")
     print("강의 자동화 연습을 시작합니다...")
 
