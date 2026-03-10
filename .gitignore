@@ -1,12 +1,6 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-
-# Mac
-.DS_Store
-
-# Environment & Drivers
-.env
+# Virtual Environment
 venv/
-chromedriver
+
+# Python cache
+__pycache__/
+*.pyc
